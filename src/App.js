@@ -6,7 +6,7 @@ import TeacherShowProfile from './pages/TeacherShowProfile';
 import TeacherSearch from './pages/TeacherSearch';
 import TeacherLogin from './pages/TeacherLogin';
 import TeacherProfile from './pages/TeacherProfile';
-
+import Navbar from './pages/Navbar';
 import { AuthProvider } from './pages/AuthContext';
 import ProtectedRoute from './pages/ProtectedRoute';
 
@@ -16,7 +16,9 @@ axios.defaults.withCredentials = true;
 
 function App() {
   return (
+    
     <Router>  {/* Router should wrap the entire app */}
+    <Navbar/>
       <AuthProvider> {/* AuthProvider must be inside Router to use useNavigate */}
         <Routes>
           <Route path="/" element={<LandingPage />} />
