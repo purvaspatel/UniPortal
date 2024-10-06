@@ -24,6 +24,11 @@ function TeacherProfile() {
   });
 
   useEffect(() => {
+    const token = sessionStorage.getItem('user');
+    if (!token) {
+      navigate('/teacher-login');  // Redirect to login if token is missing
+    }
+
     const fetchTeacher = async () => {
       try {
         const response = await axios.get(`http://localhost:5000/api/teachers/${id}`);
@@ -44,7 +49,7 @@ function TeacherProfile() {
       }
     };
     fetchTeacher();
-  }, [id, isEditing]);
+  }, [id, isEditing, navigate]);
 
   const handleSlotChange = (day, time) => {
     setFormData(prev => {
@@ -98,20 +103,17 @@ function TeacherProfile() {
 
   const handleLogout = async () => {
     try {
-      await axios.post('http://localhost:5000/api/teacher-logout');
+      await axios.post('/api/teacher-logout'); // Using relative path since baseURL is set
       
-      // Clear token/session
-      localStorage.removeItem('token');
+      // Clear session storage
+      sessionStorage.clear();
       
-      // Redirect to login page
-      navigate('/teacher-login');
-  
-      // Clear browser history to prevent back navigation
-      window.history.pushState(null, '', '/teacher-login');  // Add this after redirect
+      // Redirect to login page and replace history entry
+      navigate('/teacher-login', { replace: true });
     } catch (error) {
       alert('Failed to logout');
     }
-  };
+  }
 
   if (!formData.email) {
     return <div>Loading...</div>;

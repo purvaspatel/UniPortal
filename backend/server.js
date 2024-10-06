@@ -24,10 +24,22 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: { 
-    secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    secure: process.env.NODE_ENV === 'production', // Only use secure cookies in production (HTTPS)
+    httpOnly: true, // Makes cookie inaccessible to client-side JS
+    maxAge: 1 * 60 * 60 * 1000 // 1 hour session expiration
   }
 }));
+
+app.use((req, res, next) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  next();
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: 'Something went wrong!', error: err.message });
+});
 
 // Multer configuration for file uploads
 const storage = multer.diskStorage({
@@ -174,14 +186,6 @@ app.post('/api/teacher-login', async (req, res) => {
   }
 });
 
-app.get('/api/check-auth', (req, res) => {
-  if (req.session.teacherId) {
-    res.json({ loggedIn: true, user: req.session.teacherId });
-  } else {
-    res.json({ loggedIn: false });
-  }
-});
-
 // Get teacher profile
 app.get('/api/teachers/:id?', async (req, res) => {
   try {
@@ -239,17 +243,19 @@ app.put('/api/teachers/:id', isAuthenticated, upload.single('photo'), async (req
 app.post('/api/teacher-logout', (req, res) => {
   req.session.destroy((err) => {
     if (err) {
-      console.error('Error logging out:', err);
-      return res.status(500).json({ message: 'Error logging out', error: err.message });
+      return res.status(500).json({ message: 'Failed to log out' });
     }
+    res.clearCookie('connect.sid'); // Clears the session cookie
     res.json({ message: 'Logout successful' });
   });
 });
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: 'Something went wrong!', error: err.message });
+app.get('/api/check-auth', (req, res) => {
+  if (req.session.teacherId) {
+    res.json({ loggedIn: true, user: req.session.teacherId });
+  } else {
+    res.json({ loggedIn: false });
+  }
 });
 
 // Start the server
