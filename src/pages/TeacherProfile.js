@@ -24,14 +24,9 @@ function TeacherProfile() {
   });
 
   useEffect(() => {
-    const token = sessionStorage.getItem('user');
-    if (!token) {
-      navigate('/teacher-login');  // Redirect to login if token is missing
-    }
-
     const fetchTeacher = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/teachers/${id}`);
+        const response = await axios.get(`/api/teachers/${id}`);
         const data = response.data;
         setFormData({
           name: data.name,
@@ -39,7 +34,7 @@ function TeacherProfile() {
           school: data.school,
           department: data.department,
           photo: null,
-          photoUrl: data.photo ? `http://localhost:5000${data.photo}` : '',
+          photoUrl: data.photo || '',
           cabinNumber: data.cabinNumber,
           availableSlots: data.availableSlots || {},
           researchInterests: data.researchInterests.map(interest => ({ value: interest, label: interest })) || []
@@ -49,7 +44,7 @@ function TeacherProfile() {
       }
     };
     fetchTeacher();
-  }, [id, isEditing, navigate]);
+  }, [id, isEditing]);
 
   const handleSlotChange = (day, time) => {
     setFormData(prev => {
@@ -70,10 +65,12 @@ function TeacherProfile() {
 
   const handlePhotoChange = (e) => {
     if (e.target.files[0]) {
+      const file = e.target.files[0];
+      // Create a temporary URL for preview
       setFormData(prev => ({
         ...prev,
-        photo: e.target.files[0],
-        photoUrl: URL.createObjectURL(e.target.files[0])
+        photo: file,
+        photoUrl: URL.createObjectURL(file)
       }));
     }
   };
@@ -93,7 +90,16 @@ function TeacherProfile() {
       updatedFormData.append('availableSlots', JSON.stringify(formData.availableSlots));
       updatedFormData.append('researchInterests', JSON.stringify(formData.researchInterests.map(item => item.value)));
 
-      await axios.put(`http://localhost:5000/api/teachers/${id}`, updatedFormData);
+      const response = await axios.put(`/api/teachers/${id}`, updatedFormData);
+      
+      // Update the photoUrl with the new Cloudinary URL if a new photo was uploaded
+      if (response.data.photo) {
+        setFormData(prev => ({
+          ...prev,
+          photoUrl: response.data.photo
+        }));
+      }
+
       alert('Profile updated successfully');
       setIsEditing(false);
     } catch (error) {
@@ -106,7 +112,7 @@ function TeacherProfile() {
       await axios.post('/api/teacher-logout'); // Using relative path since baseURL is set
       
       // Clear session storage
-      sessionStorage.clear();
+      sessionStorage.removeItem('user');
       
       // Redirect to login page and replace history entry
       navigate('/teacher-login', { replace: true });
@@ -114,6 +120,10 @@ function TeacherProfile() {
       alert('Failed to logout');
     }
   }
+
+  const handleImageError = (e) => {
+    e.target.src = 'samples/man-potrait'; // Add a placeholder image in your public folder
+  };
 
   if (!formData.email) {
     return <div>Loading...</div>;
@@ -126,7 +136,7 @@ function TeacherProfile() {
       {!isEditing ? (
         <div>
           {formData.photoUrl && (
-            <img src={formData.photoUrl} alt={formData.name} className="mt-4 max-w-xs rounded-lg shadow" />
+            <img src={formData.photoUrl} alt={formData.name} className="mt-4 max-w-xs rounded-lg shadow" onError={handleImageError}/>
           )}
           <br />
           <p><strong>Name:</strong> {formData.name}</p>

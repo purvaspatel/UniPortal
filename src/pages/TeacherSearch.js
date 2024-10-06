@@ -56,6 +56,36 @@ function TeacherSearch() {
     navigate(`/teacher/${teacherId}`);
   };
 
+  const handleImageError = (e) => {
+    // Only set the fallback if we haven't already tried
+    if (!e.target.getAttribute('data-failed')) {
+      e.target.setAttribute('data-failed', 'true');
+      e.target.src = 'https://res.cloudinary.com/ds0hgmipo/image/upload/v1728231827/teacher-photos/default.jpg'; // Make sure this exists in your public folder
+    } else {
+      // If even the fallback fails, remove the image
+      e.target.style.display = 'none';
+    }
+  };
+
+  const TeacherImage = ({ teacher }) => {
+    if (!teacher.photo) {
+      return (
+        <div className="ml-4 w-24 h-32 bg-gray-200 rounded-lg flex items-center justify-center">
+          <span className="text-gray-500">No Photo</span>
+        </div>
+      );
+    }
+
+    return (
+      <img
+        src={teacher.photo}
+        alt={teacher.name}
+        className="ml-4 w-24 h-32 rounded-lg shadow object-cover"
+        onError={handleImageError}
+      />
+    );
+  };
+
   return (
     <div className="mt-10">
       <div className="max-w-md mx-auto">
@@ -129,13 +159,7 @@ function TeacherSearch() {
                     {teacher.researchInterests.join(", ")}
                   </p>
                 </div>
-                {teacher.photo && (
-                  <img
-                    src={`http://localhost:5000${teacher.photo}`}
-                    alt={teacher.name}
-                    className="ml-4 w-24 h-32 rounded-lg shadow object-cover"
-                  />
-                )}
+                <TeacherImage teacher={teacher} />
               </div>
             ))}
           </div>

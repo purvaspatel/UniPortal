@@ -6,6 +6,8 @@ const cors = require('cors');
 const path = require('path');
 const session = require('express-session');
 const Teacher = require('./models/Teacher');
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -41,17 +43,23 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: 'Something went wrong!', error: err.message });
 });
 
-// Multer configuration for file uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadPath = path.resolve(__dirname, 'uploads');
-    cb(null, uploadPath);
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + '-' + file.originalname);
-  },
+cloudinary.config({ 
+  cloud_name: 'ds0hgmipo', 
+  api_key: '755621992983658', 
+  api_secret: 'FU6uSEMyjKwjCIXKzoeDuMgBPGo' // Click 'View API Keys' above to copy your API secret
 });
-const upload = multer({ storage });
+
+// Configure Cloudinary storage
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'teacher-photos',
+    allowed_formats: ['jpg', 'jpeg', 'png'],
+    transformation: [{ width: 500, height: 500, crop: 'limit' }]
+  }
+});
+
+const upload = multer({ storage: storage });
 
 // MongoDB connection
 const mongo_uri = process.env.MONGO_URI || "mongodb+srv://kalashjain124:KalashJain12@cluster0.ev11zj4.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
@@ -61,9 +69,6 @@ mongoose.connect(mongo_uri, {
 })
 .then(() => console.log('MongoDB connected'))
 .catch((err) => console.error('MongoDB connection error:', err));
-
-// Serve uploaded files
-app.use('/uploads', express.static(path.resolve(__dirname, 'uploads')));
 
 // Middleware to check if the teacher is authenticated
 function isAuthenticated(req, res, next) {
@@ -111,7 +116,7 @@ app.post('/api/teachers', upload.single('photo'), async (req, res) => {
       return res.status(400).json({ message: 'Missing required fields' });
     }
 
-    const photo = req.file ? `/uploads/${req.file.filename}` : null;
+    const photo = req.file ? req.file.path : null;
     let parsedSlots = {};
     let parsedInterests = [];
 
@@ -215,7 +220,7 @@ app.put('/api/teachers/:id', isAuthenticated, upload.single('photo'), async (req
     const updateData = req.body;
 
     if (req.file) {
-      updateData.photo = `/uploads/${req.file.filename}`;
+      updateData.photo = req.file.path;
     }
 
     // Ensure availableSlots and researchInterests are properly parsed
