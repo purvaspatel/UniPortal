@@ -1,0 +1,22 @@
+.relative {
+  position: relative; /* Create a positioning context */
+}
+
+.fade-text {
+  position: absolute; /* Position the words absolutely */
+  opacity: 0; /* Initially hidden */
+  transition: opacity 0.5s ease-in-out; /* Smooth transition */
+}
+
+.fade-in {
+  opacity: 1; /* Fully visible */
+}
+
+.fade-out {
+  opacity: 0; /* Fully invisible */
+}
+
+.static-text {
+  display: inline-block; /* Keeps the position fixed */
+  margin-left: 0.5rem; /* Add space between animated and static text */
+}

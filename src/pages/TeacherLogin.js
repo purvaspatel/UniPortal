@@ -25,7 +25,7 @@ function TeacherLogin() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
+    <div className="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-lg border border-gray-400">
       <h2 className="text-3xl font-bold">Teacher Login</h2>
       {error && <p className="text-red-500">{error}</p>}
       <form onSubmit={handleLogin} className="mt-4">

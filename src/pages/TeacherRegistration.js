@@ -249,7 +249,7 @@ function TeacherRegistration() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
+    <div className="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-lg border border-gray-400 mb-20">
       <h1 className="text-4xl font-bold text-center mb-6">Teacher Registration</h1>
       {flashMessage && (
         <div className={`px-4 py-3 rounded relative mb-4 ${

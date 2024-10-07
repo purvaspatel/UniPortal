@@ -6,12 +6,9 @@ import Footer from "./Footer";
 function LandingPage() {
   return (
     
-    <div className="text-center mt-10 pl-5 pr-5">
+    <div className="text-center  pl-12 pr-12 ">
       <HeroSection/>
-      
-      
-    
-      
+      <FeaturesSection/>
       <h1 className="text-4xl font-bold">Welcome to the University Portal</h1>
       <p className="mt-4">Navigate to the sections using the links below:</p>
       <div className="mt-4 space-x-4">
