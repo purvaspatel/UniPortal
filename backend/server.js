@@ -46,16 +46,20 @@ app.use((err, req, res, next) => {
 cloudinary.config({ 
   cloud_name: 'ds0hgmipo', 
   api_key: '755621992983658', 
-  api_secret: 'FU6uSEMyjKwjCIXKzoeDuMgBPGo' // Click 'View API Keys' above to copy your API secret
+  api_secret: 'FU6uSEMyjKwjCIXKzoeDuMgBPGo'
 });
 
-// Configure Cloudinary storage
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: 'teacher-photos',
     allowed_formats: ['jpg', 'jpeg', 'png'],
-    transformation: [{ width: 500, height: 500, crop: 'limit' }]
+    transformation: [
+      { width: 500, height: 500, crop: 'fill' },
+      { quality: 'auto:low' },
+      { fetch_format: 'auto' },
+      { compression: 'low' }
+    ]
   }
 });
 
@@ -219,11 +223,30 @@ app.put('/api/teachers/:id', isAuthenticated, upload.single('photo'), async (req
     const teacherId = req.params.id;
     const updateData = req.body;
 
+    // If a new photo was uploaded
     if (req.file) {
+      const currentTeacher = await Teacher.findById(teacherId).select('-password');
+
+      if (currentTeacher.photo) {
+        console.log(currentTeacher.photo)
+        const publicId = "teacher-photos/" + currentTeacher.photo
+          .split('/')
+          .pop()
+          .split('.')[0]; // Extract public_id from URL
+        console.log(publicId);
+        
+        try {
+          cloudinary.uploader.destroy(publicId, function(result) { console.log(result) });
+        } catch (deleteError) {
+          console.error('Error deleting old image:', deleteError);
+          // Continue with the update even if delete fails
+        }
+      }
+
       updateData.photo = req.file.path;
     }
 
-    // Ensure availableSlots and researchInterests are properly parsed
+    // Parse JSON strings if they exist
     if (typeof updateData.availableSlots === 'string') {
       updateData.availableSlots = JSON.parse(updateData.availableSlots);
     }
@@ -231,7 +254,11 @@ app.put('/api/teachers/:id', isAuthenticated, upload.single('photo'), async (req
       updateData.researchInterests = JSON.parse(updateData.researchInterests);
     }
 
-    const updatedTeacher = await Teacher.findByIdAndUpdate(teacherId, updateData, { new: true }).select('-password');
+    const updatedTeacher = await Teacher.findByIdAndUpdate(
+      teacherId,
+      updateData,
+      { new: true }
+    ).select('-password');
 
     if (!updatedTeacher) {
       return res.status(404).json({ message: 'Teacher not found' });
@@ -240,7 +267,10 @@ app.put('/api/teachers/:id', isAuthenticated, upload.single('photo'), async (req
     res.json(updatedTeacher);
   } catch (error) {
     console.error('Error updating teacher profile:', error);
-    res.status(500).json({ message: 'Error updating teacher profile', error: error.message });
+    res.status(500).json({ 
+      message: 'Error updating teacher profile', 
+      error: error.message 
+    });
   }
 });
 
