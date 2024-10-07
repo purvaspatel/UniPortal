@@ -1,9 +1,17 @@
 import React from "react";
 import { Link } from "react-router-dom";
-
+import HeroSection from './HeroSection';
+import FeaturesSection from "./FeatureSection";
+import Footer from "./Footer";
 function LandingPage() {
   return (
-    <div className="text-center mt-10">
+    
+    <div className="text-center mt-10 pl-5 pr-5">
+      <HeroSection/>
+      
+      
+    
+      
       <h1 className="text-4xl font-bold">Welcome to the University Portal</h1>
       <p className="mt-4">Navigate to the sections using the links below:</p>
       <div className="mt-4 space-x-4">
@@ -26,6 +34,7 @@ function LandingPage() {
           Browse Teachers
         </Link>
       </div>
+      <Footer/>
     </div>
   );
 }
