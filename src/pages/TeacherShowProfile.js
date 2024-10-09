@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 
 const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri"];
 const timeSlots = ["9-10", "10-11", "11-12", "12-1", "1-2", "2-3", "3-4", "4-5", "5-6"];
@@ -8,6 +8,13 @@ function TeacherShowProfile() {
   const [teacher, setTeacher] = useState(null);
   const [error, setError] = useState(null);
   const { id } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Get the navigation state
+  const from = location.state?.from || '/teacher-list';
+  const searchTerm = location.state?.searchTerm || '';
+  const scrollPosition = location.state?.scrollPosition || 0;
 
   useEffect(() => {
     const fetchTeacherProfile = async () => {
@@ -28,12 +35,22 @@ function TeacherShowProfile() {
     fetchTeacherProfile();
   }, [id]);
 
+  const handleBack = (e) => {
+    e.preventDefault();
+    navigate(from, { 
+      state: { 
+        scrollPosition,
+        searchTerm 
+      }
+    });
+  };
+
   // Handle image loading errors
   const handleImageError = (e) => {
     // Only set the fallback if we haven't already tried
     if (!e.target.getAttribute('data-failed')) {
       e.target.setAttribute('data-failed', 'true');
-      e.target.src = 'https://res.cloudinary.com/ds0hgmipo/image/upload/v1728231827/teacher-photos/default.jpg'; // Make sure this exists in your public folder
+      e.target.src = 'https://res.cloudinary.com/ds0hgmipo/image/upload/v1728231827/teacher-photos/default.jpg';
     } else {
       // If even the fallback fails, remove the image
       e.target.style.display = 'none';
@@ -69,7 +86,13 @@ function TeacherShowProfile() {
 
   return (
     <div className="max-w-2xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
-      <Link to="/teacher-list" className="text-blue-500 hover:underline mb-4 inline-block">&larr; Back to Search</Link>
+      <button 
+        onClick={handleBack}
+        className="text-blue-500 hover:underline mb-4 inline-block"
+      >
+        ← Back to {from === '/teacher-list' ? 'Search' : 'Previous Page'}
+      </button>
+      
       <h1 className="text-3xl font-bold mb-4">{teacher.name}</h1>
       <TeacherImage teacher={teacher} />
       <br></br>
