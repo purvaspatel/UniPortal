@@ -21,6 +21,7 @@ const features = [
 const FeaturesSection = () => {
   return (
     <section id="features" className="min-h-screen bg-white py-12  px-12 ">
+      
       <div className="max-w-6xl mx-auto px-8">
         <h2 className="text-4xl font-bold text-center  mt-20 mb-12">
           Features
