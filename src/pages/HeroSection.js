@@ -1,7 +1,9 @@
 import React from 'react';
 const HeroSection = () => {
+
   return (
-    <section className="min-h-screen flex items-center justify-center">
+    
+    <section className="min-h-screen flex items-center justify-center ">
       
       <div className="text-center text-black ">
         <h1 className="text-6xl font-bold">

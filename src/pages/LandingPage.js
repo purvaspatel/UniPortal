@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import HeroSection from './HeroSection';
 import FeaturesSection from "./FeatureSection";
-import Footer from "./Footer";
+
 function LandingPage() {
   return (
     
@@ -31,7 +31,7 @@ function LandingPage() {
           Browse Teachers
         </Link>
       </div>
-      <Footer/>
+      
     </div>
   );
 }

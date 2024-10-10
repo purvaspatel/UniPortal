@@ -9,6 +9,7 @@ import TeacherProfile from './pages/TeacherProfile';
 import Navbar from './pages/Navbar';
 import { AuthProvider } from './pages/AuthContext';
 import ProtectedRoute from './pages/ProtectedRoute';
+import Footer from "./pages/Footer";
 
 import axios from 'axios';
 
@@ -36,6 +37,7 @@ function App() {
           />
         </Routes>
       </AuthProvider>
+      <Footer/>
     </Router>
   );
 }

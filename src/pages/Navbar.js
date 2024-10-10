@@ -26,7 +26,7 @@ const Navbar = () => {
   }, [dropdownOpen]);
 
   return (
-    <header className=" flex items-center justify-between pl-12 pr-12 py-4 bg-white border-b border-gray-400 sticky top-0">
+    <header className=" flex items-center justify-between pl-12 pr-12 py-4 bg-white border-b border-gray-400 sticky top-0 z-50">
       {/* Left Side: Logo and Text */}
       <div className="flex items-center space-x-4">
         <img src={logo} alt="Logo" className="h-12" /> {/* Adjust height/width */}

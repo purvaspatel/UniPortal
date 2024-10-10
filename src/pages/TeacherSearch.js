@@ -6,6 +6,8 @@ function TeacherSearch() {
   const [searchResults, setSearchResults] = useState([]);
   const [error, setError] = useState(null);
   const [allTeachers, setAllTeachers] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [teachersPerPage] = useState(12); // 12 teachers per page
   const navigate = useNavigate();
 
   // Fetch all teachers on initial render
@@ -50,6 +52,7 @@ function TeacherSearch() {
     );
 
     setSearchResults(filteredTeachers);
+    setCurrentPage(1); // Reset to page 1 on new search
   };
 
   const handleTeacherClick = (teacherId) => {
@@ -86,6 +89,18 @@ function TeacherSearch() {
     );
   };
 
+  // Pagination Logic
+  const indexOfLastTeacher = currentPage * teachersPerPage;
+  const indexOfFirstTeacher = indexOfLastTeacher - teachersPerPage;
+  const currentTeachers = searchResults.slice(
+    indexOfFirstTeacher,
+    indexOfLastTeacher
+  );
+
+  const totalPages = Math.ceil(searchResults.length / teachersPerPage);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   return (
     <div className="mt-10">
       <div className="max-w-md mx-auto">
@@ -94,7 +109,7 @@ function TeacherSearch() {
         <form onSubmit={handleSearch} className="space-y-4">
           <div className="">
             <label className="block text-gray-700">
-              Search by Name/Research Interest/Department
+              Search by Name/Research Interest/Department/School
             </label>
             <input
               type="text"
@@ -121,12 +136,13 @@ function TeacherSearch() {
 
       <div className="mt-8">
         <div className="max-w-sl pl-20 pr-20 mx-auto">
-        <h2 className="text-2xl font-bold mb-4">Teacher List</h2></div>
-        {searchResults.length === 0 ? (
+          <h2 className="text-2xl font-bold mb-4">Teacher List</h2>
+        </div>
+        {currentTeachers.length === 0 ? (
           <p>No teachers found.</p>
         ) : (
           <div className="grid grid-cols-2 gap-2 pl-20 pr-20">
-            {searchResults.map((teacher) => (
+            {currentTeachers.map((teacher) => (
               <div
                 key={teacher._id}
                 className="border p-4 rounded flex items-center cursor-pointer hover:bg-gray-100 transition-colors w-100"
@@ -164,6 +180,23 @@ function TeacherSearch() {
             ))}
           </div>
         )}
+
+        {/* Pagination Controls */}
+        <div className="flex justify-center mt-6">
+          {Array.from({ length: totalPages }, (_, index) => (
+            <button
+              key={index + 1}
+              onClick={() => paginate(index + 1)}
+              className={`px-4 py-2 mx-1 rounded border ${
+                currentPage === index + 1
+                  ? "bg-blue-500 text-white"
+                  : "bg-white text-blue-500 border-blue-500 hover:bg-blue-100"
+              }`}
+            >
+              {index + 1}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );
