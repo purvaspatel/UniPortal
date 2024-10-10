@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import Select from 'react-select';
 import researchOptions from '../variables/researchOptions';
+import { AuthContext } from './AuthContext';
 
 const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri"];
 const timeSlots = ["9-10", "10-11", "11-12", "12-1", "1-2", "2-3", "3-4", "4-5", "5-6"];
 
 function TeacherProfile() {
+  const { user, logout } = useContext(AuthContext);
   const { id } = useParams();
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
@@ -24,6 +26,10 @@ function TeacherProfile() {
   });
 
   useEffect(() => {
+    if (!user) {
+      navigate('/teacher-login', { replace: true });
+    }
+
     const fetchTeacher = async () => {
       try {
         const response = await axios.get(`/api/teachers/${id}`);
@@ -44,7 +50,7 @@ function TeacherProfile() {
       }
     };
     fetchTeacher();
-  }, [id, isEditing]);
+  }, [id, isEditing, user, navigate]);
 
   const handleSlotChange = (day, time) => {
     setFormData(prev => {
@@ -111,8 +117,7 @@ function TeacherProfile() {
     try {
       await axios.post('/api/teacher-logout'); // Using relative path since baseURL is set
       
-      // Clear session storage
-      sessionStorage.removeItem('user');
+      logout();
       
       // Redirect to login page and replace history entry
       navigate('/teacher-login', { replace: true });
@@ -121,8 +126,9 @@ function TeacherProfile() {
     }
   }
 
+  // Handle image loading errors
   const handleImageError = (e) => {
-    e.target.src = 'samples/man-potrait'; // Add a placeholder image in your public folder
+    e.target.src = 'https://res.cloudinary.com/ds0hgmipo/image/upload/v1728231827/teacher-photos/default.jpg';
   };
 
   if (!formData.email) {

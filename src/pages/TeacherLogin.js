@@ -1,14 +1,21 @@
-import React, { useState,useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import { AuthContext } from './AuthContext';
-
+import { useNavigate } from 'react-router-dom';
 
 function TeacherLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { login } = useContext(AuthContext);
-  
+  const { login, user } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  // Check if user is already authenticated, if yes, redirect to profile
+  useEffect(() => {
+    if (user) {
+      navigate(`/teacher-profile/${user.id}`);
+    }
+  }, [user, navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();

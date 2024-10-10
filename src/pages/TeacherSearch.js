@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function TeacherSearch() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -7,13 +7,6 @@ function TeacherSearch() {
   const [error, setError] = useState(null);
   const [allTeachers, setAllTeachers] = useState([]);
   const navigate = useNavigate();
-  const location = useLocation();
-
-  useEffect(() => {
-    if (location.state?.scrollPosition) {
-      window.scrollTo(0, location.state.scrollPosition);
-    }
-  }, [location]);
 
   // Fetch all teachers on initial render
   useEffect(() => {
@@ -60,15 +53,7 @@ function TeacherSearch() {
   };
 
   const handleTeacherClick = (teacherId) => {
-    // Save current scroll position before navigation
-    const scrollPosition = window.pageYOffset;
-    navigate(`/teacher/${teacherId}`, {
-      state: { 
-        from: location.pathname,
-        scrollPosition,
-        searchTerm 
-      }
-    });
+    navigate(`/teacher/${teacherId}`);
   };
 
   const handleImageError = (e) => {

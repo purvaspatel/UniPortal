@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }) => {
   const login = (userData) => {
     setUser(userData);
     sessionStorage.setItem('user', JSON.stringify(userData));
-    navigate(`/teacher-profile/${userData.id}`); // Redirect to profile
+    navigate(`/teacher-profile/${userData.id}`, {replace: true}); // Redirect to profile
   };
   
   const logout = () => {

@@ -86,12 +86,6 @@ function TeacherShowProfile() {
 
   return (
     <div className="max-w-2xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
-      <button 
-        onClick={handleBack}
-        className="text-blue-500 hover:underline mb-4 inline-block"
-      >
-        ← Back to {from === '/teacher-list' ? 'Search' : 'Previous Page'}
-      </button>
       
       <h1 className="text-3xl font-bold mb-4">{teacher.name}</h1>
       <TeacherImage teacher={teacher} />
