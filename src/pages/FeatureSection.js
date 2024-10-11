@@ -4,17 +4,17 @@ const features = [
   { 
     title: 'Teacher Cabins', 
     description: 'Easily access and book teacher cabins for meetings and study sessions.',
-    link: '/teacher-list' // Add your link here
+    link: '/teacher-list' 
   },
   { 
     title: 'University Clubs', 
     description: 'Join various university clubs and expand your network.',
-    link: '/university-clubs' // Add your link here
+    link: '/university-clubs' 
   },
   { 
     title: 'FAQs', 
     description: 'Find answers to the most common questions from students.',
-    link: '/faqs' // Add your link here
+    link: '/faqs' 
   },
 ];
 

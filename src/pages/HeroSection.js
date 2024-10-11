@@ -22,7 +22,7 @@ const HeroSection = () => {
         </p>
         
         <button
-          className="mt-8 px-6 py-3 bg-white text-purple-500 font-bold rounded-lg shadow-lg hover:bg-purple-500 hover:text-white transition duration-300"
+          className="mt-8 px-6 py-3 bg-white text-purple-500 border border-purple-400 font-bold rounded-lg shadow-lg hover:bg-purple-500 hover:text-white transition duration-300"
           onClick={() => document.getElementById('features').scrollIntoView({ behavior: 'smooth' })}
         >
           Get Started

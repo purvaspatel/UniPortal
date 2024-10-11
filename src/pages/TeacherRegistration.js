@@ -26,6 +26,11 @@ function TeacherRegistration() {
   const [flashMessage, setFlashMessage] = useState('');
 
   useEffect(() => {
+    // Scroll to the top of the page on component load
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     setProgressWidth(`${(step / 3) * 100}%`);
   }, [step]);
 
