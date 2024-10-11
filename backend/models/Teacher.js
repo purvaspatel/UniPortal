@@ -15,6 +15,16 @@ const teacherSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
+  title: {
+    type: String,
+    required: true,
+  },
+  linkedin: {
+    type: String,
+  },
+  profileLink: {
+    type: String,
+  },
   school: {
     type: String,
     required: true,

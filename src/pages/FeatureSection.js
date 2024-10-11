@@ -9,12 +9,12 @@ const features = [
   { 
     title: 'University Clubs', 
     description: 'Join various university clubs and expand your network.',
-    link: '/university-clubs' // Add your link here
+    link: '/#' // Add your link here
   },
   { 
     title: 'FAQs', 
     description: 'Find answers to the most common questions from students.',
-    link: '/faqs' // Add your link here
+    link: '/#' // Add your link here
   },
 ];
 

@@ -29,7 +29,7 @@ const Navbar = () => {
     <header className=" flex items-center justify-between pl-12 pr-12 py-4 bg-white border-b border-gray-400 sticky top-0 z-50">
       {/* Left Side: Logo and Text */}
       <div className="flex items-center space-x-4">
-        <img src={logo} alt="Logo" className="h-12" /> {/* Adjust height/width */}
+        <a href="/"><img src={logo} alt="Logo" className="h-12"/> </a>{/* Adjust height/width */}
         <span className="font-bold text-xl">Student Uni Portal</span>
       </div>
 
@@ -49,8 +49,8 @@ const Navbar = () => {
           {dropdownOpen && (
             <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-400 shadow-lg">
               <a href="/teacher-list" className="block px-4 py-2 text-gray-600 border-b border-gray-400 hover:bg-gray-100">Teachers Sitting</a>
-              <a href="/stories" className="block px-4 py-2 text-gray-600 border-b border-gray-400 hover:bg-gray-100">Uni Clubs</a>
-              <a href="/authors" className="block px-4 py-2 text-gray-600 border-b border-gray-400 hover:bg-gray-100">FAQ's</a>
+              <a href="/#" className="block px-4 py-2 text-gray-600 border-b border-gray-400 hover:bg-gray-100">Uni Clubs</a>
+              <a href="/#" className="block px-4 py-2 text-gray-600 border-b border-gray-400 hover:bg-gray-100">FAQ's</a>
             </div>
           )}
         </div>

@@ -18,6 +18,9 @@ function TeacherProfile() {
     email: '',
     school: '',
     department: '',
+    title: '',
+    linkedin: '',
+    profileLink: '',
     cabinNumber: '',
     photo: null,
     photoUrl: '',
@@ -39,6 +42,9 @@ function TeacherProfile() {
           email: data.email,
           school: data.school,
           department: data.department,
+          title: data.title || '',
+          linkedin: data.linkedin || '',
+          profileLink: data.profileLink || '',
           photo: null,
           photoUrl: data.photo || '',
           cabinNumber: data.cabinNumber,
@@ -72,7 +78,6 @@ function TeacherProfile() {
   const handlePhotoChange = (e) => {
     if (e.target.files[0]) {
       const file = e.target.files[0];
-      // Create a temporary URL for preview
       setFormData(prev => ({
         ...prev,
         photo: file,
@@ -89,6 +94,9 @@ function TeacherProfile() {
       updatedFormData.append('email', formData.email);
       updatedFormData.append('school', formData.school);
       updatedFormData.append('department', formData.department);
+      updatedFormData.append('title', formData.title);
+      updatedFormData.append('linkedin', formData.linkedin);
+      updatedFormData.append('profileLink', formData.profileLink);
       updatedFormData.append('cabinNumber', formData.cabinNumber);
       if (formData.photo instanceof File) {
         updatedFormData.append('photo', formData.photo);
@@ -98,7 +106,6 @@ function TeacherProfile() {
 
       const response = await axios.put(`/api/teachers/${id}`, updatedFormData);
       
-      // Update the photoUrl with the new Cloudinary URL if a new photo was uploaded
       if (response.data.photo) {
         setFormData(prev => ({
           ...prev,
@@ -115,18 +122,14 @@ function TeacherProfile() {
 
   const handleLogout = async () => {
     try {
-      await axios.post('/api/teacher-logout'); // Using relative path since baseURL is set
-      
+      await axios.post('/api/teacher-logout');
       logout();
-      
-      // Redirect to login page and replace history entry
       navigate('/teacher-login', { replace: true });
     } catch (error) {
       alert('Failed to logout');
     }
-  }
+  };
 
-  // Handle image loading errors
   const handleImageError = (e) => {
     e.target.src = 'https://res.cloudinary.com/ds0hgmipo/image/upload/v1728231827/teacher-photos/default.jpg';
   };
@@ -149,8 +152,17 @@ function TeacherProfile() {
           <p><strong>Email:</strong> {formData.email}</p>
           <p><strong>School:</strong> {formData.school}</p>
           <p><strong>Department:</strong> {formData.department}</p>
+          <p><strong>Title:</strong> {formData.title}</p>
+          {formData.linkedin && (
+            <p><strong>LinkedIn:</strong> <a href={`https://linkedin.com/in/${formData.linkedin}`} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline font-semibold">{formData.linkedin}</a></p>
+          )}
+          {formData.profileLink && (
+            <p><strong>Profile Link:</strong> <a href={formData.profileLink} target="_blank" rel="noopener noreferrer">{formData.profileLink}</a></p>
+          )}
           <p><strong>Cabin Number:</strong> {formData.cabinNumber}</p>
           <p><strong>Research Interests:</strong> {formData.researchInterests.map(interest => interest.label).join(', ')}</p>
+
+          {/* Available Slots Table */}
           <div className="max-w-md mx-auto mt-10">
             <h3 className="text-xl font-bold mt-4">Available Slots</h3>
             <div className="grid grid-cols-10 gap-1 text-center">
@@ -229,12 +241,46 @@ function TeacherProfile() {
               required
             >
               <option value="">Select Department</option>
-              <option value="Computer Science">Computer Science</option>
+              <option value="CSE">CSE</option>
               <option value="ICT">ICT</option>
-              <option value="E.C">E.C</option>
+              <option value="ECE">ECE</option>
+              <option value="EEE">EEE</option>
               <option value="Chemical">Chemical</option>
               <option value="Mechanical">Mechanical</option>
             </select>
+          </div>
+          <div>
+            <label className="block text-gray-700">Title</label>
+            <input
+              type="text"
+              name="title"
+              value={formData.title}
+              onChange={handleInputChange}
+              className="w-full p-2 border border-gray-300 rounded"
+              placeholder="e.g., Professor, Assistant Professor"
+            />
+          </div>
+          <div>
+            <label className="block text-gray-700">LinkedIn Username</label>
+            <input
+              type="text"
+              name="linkedin"
+              value={formData.linkedin}
+              onChange={handleInputChange}
+              className="w-full p-2 border border-gray-300 rounded"
+              placeholder="Optional"
+            />
+          </div>
+          <div>
+            <label className="block text-gray-700">Profile Link</label>
+            <input
+              type="url"
+              name="profileLink"
+              value={formData.profileLink}
+              onChange={handleInputChange}
+              className="w-full p-2 border border-gray-300 rounded"
+              placeholder="Optional"
+            />
           </div>
           <div>
             <label className="block text-gray-700">Cabin Number</label>
@@ -250,12 +296,13 @@ function TeacherProfile() {
           <div>
             <label className="block text-gray-700">Photo</label>
             {formData.photoUrl && (
-              <img src={formData.photoUrl} alt="Current" className="mt-2 max-w-xs rounded-lg shadow" />
+              <img src={formData.photoUrl} alt={formData.name} className="mt-4 max-w-xs rounded-lg shadow" onError={handleImageError}/>
             )}
             <input
               type="file"
+              accept="image/*"
               onChange={handlePhotoChange}
-              className="w-full p-2 border border-gray-300 rounded mt-2"
+              className="mt-2"
             />
           </div>
           <div>
@@ -264,44 +311,43 @@ function TeacherProfile() {
               isMulti
               options={researchOptions}
               value={formData.researchInterests}
-              onChange={(selectedOptions) => setFormData(prev => ({ ...prev, researchInterests: selectedOptions }))}
+              onChange={(selected) => setFormData(prev => ({ ...prev, researchInterests: selected }))}
               className="w-full"
-              placeholder="Select research interests"
             />
           </div>
-          <div className="max-w-md mx-auto mt-10">
-            <label className="block text-gray-700 mb-2">Available Slots</label>
-            <div className="grid grid-cols-10 gap-1 text-center">
-              <div></div>
-              {timeSlots.map((time) => (
-                <div key={time} className="font-semibold">{time}</div>
-              ))}
-              {daysOfWeek.map((day) => (
-                <React.Fragment key={day}>
-                  <div className="font-semibold">{day}</div>
-                  {timeSlots.map((time) => (
-                    <div
-                      key={time}
-                      className={`w-10 h-10 border flex justify-center items-center cursor-pointer ${formData.availableSlots[day]?.includes(time) ? 'bg-green-500 text-white font-bold' : ''}`}
-                      onClick={() => handleSlotChange(day, time)}
-                    >
-                      {formData.availableSlots[day]?.includes(time) ? '✔️' : ''}
-                    </div>
-                  ))}
-                </React.Fragment>
-              ))}
+          <div>
+            <label className="block text-gray-700">Available Slots</label>
+            <div className="max-w-md mx-auto mt-4">
+              <div className="grid grid-cols-10 gap-1 text-center">
+                <div></div>
+                {timeSlots.map((time) => (
+                  <div key={time} className="font-semibold">{time}</div>
+                ))}
+                {daysOfWeek.map((day) => (
+                  <React.Fragment key={day}>
+                    <div className="font-semibold">{day}</div>
+                    {timeSlots.map((time) => (
+                      <div
+                        key={time}
+                        className={`w-10 h-10 border flex justify-center items-center cursor-pointer ${formData.availableSlots[day]?.includes(time) ? 'bg-green-500' : ''}`}
+                        onClick={() => handleSlotChange(day, time)}
+                      ></div>
+                    ))}
+                  </React.Fragment>
+                ))}
+              </div>
             </div>
           </div>
           <button
             type="submit"
-            className="bg-green-500 text-white p-2 rounded"
+            className="bg-blue-500 text-white p-2 rounded"
           >
             Save Changes
           </button>
           <button
             type="button"
             onClick={() => setIsEditing(false)}
-            className="bg-red-500 text-white p-2 rounded ml-4"
+            className="bg-gray-500 text-white p-2 rounded ml-4"
           >
             Cancel
           </button>
