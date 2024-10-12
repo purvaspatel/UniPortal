@@ -114,9 +114,9 @@ app.get('/api/teachers/search', async (req, res) => {
 // Route to handle teacher registration
 app.post('/api/teachers', upload.single('photo'), async (req, res) => {
   try {
-    const { name, email, school, department, cabinNumber, password, availableSlots, researchInterests } = req.body;
+    const { name, email, school, department, title, cabinNumber, password, availableSlots, researchInterests } = req.body;
 
-    if (!name || !email || !school || !department || !cabinNumber || !password || !availableSlots) {
+    if (!name || !email || !school || !department || !title || !cabinNumber || !password || !availableSlots) {
       return res.status(400).json({ message: 'Missing required fields' });
     }
 
@@ -136,6 +136,7 @@ app.post('/api/teachers', upload.single('photo'), async (req, res) => {
       email,
       school,
       department,
+      title,
       cabinNumber,
       photo,
       password,

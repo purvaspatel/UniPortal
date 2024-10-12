@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+// import { useNavigate, useLocation } from 'react-router-dom';
 
 const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri"];
 const timeSlots = ["9-10", "10-11", "11-12", "12-1", "1-2", "2-3", "3-4", "4-5", "5-6"];
@@ -8,13 +9,13 @@ function TeacherShowProfile() {
   const [teacher, setTeacher] = useState(null);
   const [error, setError] = useState(null);
   const { id } = useParams();
-  const navigate = useNavigate();
-  const location = useLocation();
+  // const navigate = useNavigate();
+  // const location = useLocation();
 
   // Get the navigation state
-  const from = location.state?.from || '/teacher-list';
-  const searchTerm = location.state?.searchTerm || '';
-  const scrollPosition = location.state?.scrollPosition || 0;
+  // const from = location.state?.from || '/teacher-list';
+  // const searchTerm = location.state?.searchTerm || '';
+  // const scrollPosition = location.state?.scrollPosition || 0;
 
   useEffect(() => {
     const fetchTeacherProfile = async () => {
@@ -35,15 +36,15 @@ function TeacherShowProfile() {
     fetchTeacherProfile();
   }, [id]);
 
-  const handleBack = (e) => {
-    e.preventDefault();
-    navigate(from, { 
-      state: { 
-        scrollPosition,
-        searchTerm 
-      }
-    });
-  };
+  // const handleBack = (e) => {
+  //   e.preventDefault();
+  //   navigate(from, { 
+  //     state: { 
+  //       scrollPosition,
+  //       searchTerm 
+  //     }
+  //   });
+  // };
 
   // Handle image loading errors
   const handleImageError = (e) => {
@@ -96,6 +97,13 @@ function TeacherShowProfile() {
           <p><strong>School:</strong> {teacher.school}</p>
           <p><strong>Department:</strong> {teacher.department}</p>
           <p><strong>Cabin Number:</strong> {teacher.cabinNumber}</p>
+          <p><strong>Title:</strong> {teacher.title}</p>
+          {teacher.linkedin && (
+            <p><strong>LinkedIn:</strong> <a href={`https://linkedin.com/in/${teacher.linkedin}`} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline font-semibold">{teacher.linkedin}</a></p>
+          )}
+          {teacher.profileLink && (
+            <p><strong>Profile Link:</strong> <a href={teacher.profileLink} target="_blank" rel="noopener noreferrer">{teacher.profileLink}</a></p>
+          )}
         </div>
         <div>
           <p><strong>Research Interests:</strong></p>
