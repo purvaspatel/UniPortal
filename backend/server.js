@@ -110,6 +110,36 @@ app.get('/api/teachers/search', async (req, res) => {
   }
 });
 
+app.delete('/api/teachers/delete', async (req, res) => {
+  try {
+      const { teacherId, password } = req.body;
+
+      // Find the teacher by ID
+      const teacher = await Teacher.findById(teacherId);
+      if (!teacher) {
+          return res.status(404).json({ message: "Teacher not found" });
+      }
+
+      // Compare the provided password with the stored password
+      if (teacher.password !== password) {
+          return res.status(401).json({ message: "Incorrect password" });
+      }
+
+      // Delete the teacher's profile
+      await Teacher.findByIdAndDelete(teacherId);
+
+      // Destroy session and clear cookie
+      req.session.destroy((err) => {
+        if (err) {
+          return res.status(500).json({ message: 'Failed to destroy session' });
+        }
+        res.clearCookie('connect.sid'); // Clears the session cookie
+        return res.status(200).json({ message: "Profile deleted successfully" }); // Send response only once here
+      });
+  } catch (error) {
+      res.status(500).json({ message: "Error deleting profile", error });
+  }
+});
 
 // Route to handle teacher registration
 app.post('/api/teachers', upload.single('photo'), async (req, res) => {

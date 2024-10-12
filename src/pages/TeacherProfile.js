@@ -9,6 +9,9 @@ const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri"];
 const timeSlots = ["9-10", "10-11", "11-12", "12-1", "1-2", "2-3", "3-4", "4-5", "5-6"];
 
 function TeacherProfile() {
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [password, setPassword] = useState("");
+  const [deleteError, setDeleteError] = useState("");
   const { user, logout } = useContext(AuthContext);
   const { id } = useParams();
   const navigate = useNavigate();
@@ -120,6 +123,21 @@ function TeacherProfile() {
     }
   };
 
+  // Handle delete request
+  const handleDeleteProfile = async () => {
+    try {
+        const response = await axios.delete('/api/teachers/delete', {
+            data: { teacherId: id, password }
+        });
+        alert(response.data.message);
+        logout();
+        // Redirect to homepage or login after deletion
+        window.location.href = '/';
+    } catch (error) {
+        setDeleteError(error.response.data.message || "Error deleting profile");
+    }
+};
+
   const handleLogout = async () => {
     try {
       await axios.post('/api/teacher-logout');
@@ -190,6 +208,45 @@ function TeacherProfile() {
           >
             Edit Profile
           </button>
+
+          <button 
+                className="bg-red-500 text-white px-4 py-2 rounded mt-4"
+                onClick={() => setDeleteModalOpen(true)}
+            >
+                Delete Profile
+            </button>
+
+            {isDeleteModalOpen && (
+                <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
+                    <div className="bg-white p-6 rounded shadow-lg">
+                        <h2>Confirm Deletion</h2>
+                        <p>Please enter your password to confirm:</p>
+                        <input 
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="border p-2 rounded w-full mt-2"
+                        />
+                        {deleteError && (
+                            <p className="text-red-500 mt-2">{deleteError}</p>
+                        )}
+                        <div className="flex justify-end mt-4">
+                            <button 
+                                className="bg-gray-500 text-white px-4 py-2 rounded mr-2"
+                                onClick={() => setDeleteModalOpen(false)}
+                            >
+                                Cancel
+                            </button>
+                            <button 
+                                className="bg-red-500 text-white px-4 py-2 rounded"
+                                onClick={handleDeleteProfile}
+                            >
+                                Confirm Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
       ) : (
         <form onSubmit={handleUpdate} className="space-y-4">
