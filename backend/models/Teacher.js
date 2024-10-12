@@ -53,6 +53,10 @@ const teacherSchema = new mongoose.Schema({
     type: [String],
     default: [],
   },
+  announcements: [{ 
+    text: String, 
+    createdAt: { type: Date, default: Date.now } 
+  }],
 });
 
 const Teacher = mongoose.model("Teacher", teacherSchema);

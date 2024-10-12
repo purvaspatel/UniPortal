@@ -305,6 +305,49 @@ app.put('/api/teachers/:id', isAuthenticated, upload.single('photo'), async (req
   }
 });
 
+app.post('/api/teachers/:id/announcements', isAuthenticated, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { text } = req.body;
+
+    const teacher = await Teacher.findById(id);
+    if (!teacher) {
+      return res.status(404).json({ message: 'Teacher not found' });
+    }
+
+    const newAnnouncement = { text, createdAt: new Date() };
+    teacher.announcements.push(newAnnouncement);
+    await teacher.save();
+
+    res.status(201).json(newAnnouncement);
+  } catch (error) {
+    console.error('Error adding announcement:', error);
+    res.status(500).json({ message: 'Error adding announcement', error: error.message });
+  }
+});
+
+// Delete an announcement
+app.delete('/api/teachers/:teacherId/announcements/:announcementId', isAuthenticated, async (req, res) => {
+  try {
+    const { teacherId, announcementId } = req.params;
+
+    const teacher = await Teacher.findById(teacherId);
+    if (!teacher) {
+      return res.status(404).json({ message: 'Teacher not found' });
+    }
+
+    teacher.announcements = teacher.announcements.filter(
+      (announcement) => announcement._id.toString() !== announcementId
+    );
+    await teacher.save();
+
+    res.json({ message: 'Announcement deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting announcement:', error);
+    res.status(500).json({ message: 'Error deleting announcement', error: error.message });
+  }
+});
+
 // Teacher logout
 app.post('/api/teacher-logout', (req, res) => {
   req.session.destroy((err) => {

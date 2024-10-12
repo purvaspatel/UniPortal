@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Select from 'react-select';
 import researchOptions from '../variables/researchOptions';
 import { AuthContext } from './AuthContext';
+import { PlusCircle, X } from 'lucide-react';
 
 const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri"];
 const timeSlots = ["9-10", "10-11", "11-12", "12-1", "1-2", "2-3", "3-4", "4-5", "5-6"];
@@ -16,6 +17,8 @@ function TeacherProfile() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
+  const [announcements, setAnnouncements] = useState([]);
+  const [newAnnouncement, setNewAnnouncement] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -54,6 +57,7 @@ function TeacherProfile() {
           availableSlots: data.availableSlots || {},
           researchInterests: data.researchInterests.map(interest => ({ value: interest, label: interest })) || []
         });
+        setAnnouncements(data.announcements || []);
       } catch (error) {
         alert('Failed to fetch teacher data');
       }
@@ -91,6 +95,10 @@ function TeacherProfile() {
 
   const handleUpdate = async (e) => {
     e.preventDefault();
+    if (!formData.name || !formData.email || !formData.school || !formData.department || !formData.cabinNumber || !formData.title) {
+      alert("Please fill in all the required fields.");
+      return;
+    }
     try {
       const updatedFormData = new FormData();
       updatedFormData.append('name', formData.name);
@@ -116,6 +124,7 @@ function TeacherProfile() {
         }));
       }
 
+      if (!window.confirm("Are you sure you want to save the changes?")) return;
       alert('Profile updated successfully');
       setIsEditing(false);
     } catch (error) {
@@ -136,7 +145,27 @@ function TeacherProfile() {
     } catch (error) {
         setDeleteError(error.response.data.message || "Error deleting profile");
     }
-};
+  };
+
+  const handleAddAnnouncement = async () => {
+    if (!newAnnouncement.trim()) return;
+    try {
+      const response = await axios.post(`/api/teachers/${id}/announcements`, { text: newAnnouncement });
+      setAnnouncements([...announcements, response.data]);
+      setNewAnnouncement('');
+    } catch (error) {
+      alert('Failed to add announcement');
+    }
+  };
+
+  const handleDeleteAnnouncement = async (announcementId) => {
+    try {
+      await axios.delete(`/api/teachers/${id}/announcements/${announcementId}`);
+      setAnnouncements(announcements.filter(a => a._id !== announcementId));
+    } catch (error) {
+      alert('Failed to delete announcement');
+    }
+  };
 
   const handleLogout = async () => {
     try {
@@ -199,6 +228,40 @@ function TeacherProfile() {
                   ))}
                 </React.Fragment>
               ))}
+            </div>
+          </div>
+
+          {/* Announcements Section */}
+          <div className="mt-8">
+            <h3 className="text-2xl font-bold mb-4">Announcements</h3>
+            <div className="space-y-4">
+              {announcements.map((announcement) => (
+                <div key={announcement._id} className="bg-gray-100 p-3 rounded flex justify-between items-center">
+                  <span>{announcement.text}</span>
+                  <button
+                    onClick={() => handleDeleteAnnouncement(announcement._id)}
+                    className="text-red-500 hover:text-red-700"
+                    title="Delete Announcement"
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
+              ))}
+              <div className="flex">
+                <input
+                  type="text"
+                  value={newAnnouncement}
+                  onChange={(e) => setNewAnnouncement(e.target.value)}
+                  className="flex-grow p-2 border border-gray-300 rounded-l"
+                  placeholder="New announcement"
+                />
+                <button
+                  onClick={handleAddAnnouncement}
+                  className="bg-blue-500 text-white p-2 rounded-r"
+                >
+                  <PlusCircle size={24} />
+                </button>
+              </div>
             </div>
           </div>
 
