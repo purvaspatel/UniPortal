@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setUser(null);
     sessionStorage.removeItem('user');
-    navigate(`/`); // Redirect to home
+    navigate(`/`, {replace: true}); // Redirect to home
   };
 
   useEffect(() => {

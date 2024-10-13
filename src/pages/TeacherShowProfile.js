@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-// import { useNavigate, useLocation } from 'react-router-dom';
 
 const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri"];
 const timeSlots = ["9-10", "10-11", "11-12", "12-1", "1-2", "2-3", "3-4", "4-5", "5-6"];
@@ -9,13 +8,6 @@ function TeacherShowProfile() {
   const [teacher, setTeacher] = useState(null);
   const [error, setError] = useState(null);
   const { id } = useParams();
-  // const navigate = useNavigate();
-  // const location = useLocation();
-
-  // Get the navigation state
-  // const from = location.state?.from || '/teacher-list';
-  // const searchTerm = location.state?.searchTerm || '';
-  // const scrollPosition = location.state?.scrollPosition || 0;
 
   useEffect(() => {
     const fetchTeacherProfile = async () => {
@@ -36,24 +28,11 @@ function TeacherShowProfile() {
     fetchTeacherProfile();
   }, [id]);
 
-  // const handleBack = (e) => {
-  //   e.preventDefault();
-  //   navigate(from, { 
-  //     state: { 
-  //       scrollPosition,
-  //       searchTerm 
-  //     }
-  //   });
-  // };
-
-  // Handle image loading errors
   const handleImageError = (e) => {
-    // Only set the fallback if we haven't already tried
     if (!e.target.getAttribute('data-failed')) {
       e.target.setAttribute('data-failed', 'true');
       e.target.src = 'https://res.cloudinary.com/ds0hgmipo/image/upload/v1728231827/teacher-photos/default.jpg';
     } else {
-      // If even the fallback fails, remove the image
       e.target.style.display = 'none';
     }
   };
@@ -87,10 +66,9 @@ function TeacherShowProfile() {
 
   return (
     <div className="max-w-2xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
-      
       <h1 className="text-3xl font-bold mb-4">{teacher.name}</h1>
       <TeacherImage teacher={teacher} />
-      <br></br>
+      <br />
       <div className="grid grid-cols-2 gap-4">
         <div>
           <p><strong>Email:</strong> {teacher.email}</p>
@@ -116,24 +94,40 @@ function TeacherShowProfile() {
       </div>
       <h2 className="text-2xl font-semibold mt-6 mb-2">Available Slots</h2>
       <div className="">
-          <div className="grid grid-cols-10 gap-1 text-center">
-            <div></div> {/* Empty cell in the top-left corner */}
-            {timeSlots.map((time) => (
-              <div key={time} className="font-semibold">{time}</div>
-            ))}
-            {daysOfWeek.map((day) => (
-              <React.Fragment key={day}>
-                <div className="font-semibold">{day}</div>
-                {timeSlots.map((time) => (
-                  <div
-                    key={time}
-                    className={`w-10 h-10 border flex justify-center items-center ${teacher.availableSlots[day]?.includes(time) ? 'bg-green-500' : ''}`}
-                  ></div>
-                ))}
-              </React.Fragment>
-            ))}
-          </div>
+        <div className="grid grid-cols-10 gap-1 text-center">
+          <div></div>
+          {timeSlots.map((time) => (
+            <div key={time} className="font-semibold">{time}</div>
+          ))}
+          {daysOfWeek.map((day) => (
+            <React.Fragment key={day}>
+              <div className="font-semibold">{day}</div>
+              {timeSlots.map((time) => (
+                <div
+                  key={time}
+                  className={`w-10 h-10 border flex justify-center items-center ${teacher.availableSlots[day]?.includes(time) ? 'bg-green-500' : ''}`}
+                ></div>
+              ))}
+            </React.Fragment>
+          ))}
         </div>
+      </div>
+      {/* Announcements Section */}
+      <h2 className="text-2xl font-semibold mt-6 mb-2">Announcements</h2>
+      {teacher.announcements && teacher.announcements.length > 0 ? (
+        <div className="space-y-2">
+          {teacher.announcements.map((announcement, index) => (
+            <div key={index} className="bg-gray-100 p-3 rounded">
+              <p>{announcement.text}</p>
+              <p className="text-sm text-gray-500 mt-1">
+                Posted on: {new Date(announcement.createdAt).toLocaleDateString()}
+              </p>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p>No announcements at this time.</p>
+      )}
     </div>
   );
 }
