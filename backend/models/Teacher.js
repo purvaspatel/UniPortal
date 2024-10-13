@@ -15,6 +15,16 @@ const teacherSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
+  title: {
+    type: String,
+    required: true,
+  },
+  linkedin: {
+    type: String,
+  },
+  profileLink: {
+    type: String,
+  },
   school: {
     type: String,
     required: true,
@@ -43,6 +53,10 @@ const teacherSchema = new mongoose.Schema({
     type: [String],
     default: [],
   },
+  announcements: [{ 
+    text: String, 
+    createdAt: { type: Date, default: Date.now } 
+  }],
 });
 
 const Teacher = mongoose.model("Teacher", teacherSchema);

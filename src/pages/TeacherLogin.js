@@ -13,7 +13,7 @@ function TeacherLogin() {
   // Check if user is already authenticated, if yes, redirect to profile
   useEffect(() => {
     if (user) {
-      navigate(`/teacher-profile/${user.id}`);
+      navigate(`/teacher-profile/${user.id}`, {replace: true});
     }
   }, [user, navigate]);
 

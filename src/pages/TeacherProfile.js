@@ -4,20 +4,29 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Select from 'react-select';
 import researchOptions from '../variables/researchOptions';
 import { AuthContext } from './AuthContext';
+import { PlusCircle, X } from 'lucide-react';
 
 const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri"];
 const timeSlots = ["9-10", "10-11", "11-12", "12-1", "1-2", "2-3", "3-4", "4-5", "5-6"];
 
 function TeacherProfile() {
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [password, setPassword] = useState("");
+  const [deleteError, setDeleteError] = useState("");
   const { user, logout } = useContext(AuthContext);
   const { id } = useParams();
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
+  const [announcements, setAnnouncements] = useState([]);
+  const [newAnnouncement, setNewAnnouncement] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     school: '',
     department: '',
+    title: '',
+    linkedin: '',
+    profileLink: '',
     cabinNumber: '',
     photo: null,
     photoUrl: '',
@@ -39,12 +48,16 @@ function TeacherProfile() {
           email: data.email,
           school: data.school,
           department: data.department,
+          title: data.title || '',
+          linkedin: data.linkedin || '',
+          profileLink: data.profileLink || '',
           photo: null,
           photoUrl: data.photo || '',
           cabinNumber: data.cabinNumber,
           availableSlots: data.availableSlots || {},
           researchInterests: data.researchInterests.map(interest => ({ value: interest, label: interest })) || []
         });
+        setAnnouncements(data.announcements || []);
       } catch (error) {
         alert('Failed to fetch teacher data');
       }
@@ -72,7 +85,6 @@ function TeacherProfile() {
   const handlePhotoChange = (e) => {
     if (e.target.files[0]) {
       const file = e.target.files[0];
-      // Create a temporary URL for preview
       setFormData(prev => ({
         ...prev,
         photo: file,
@@ -83,12 +95,19 @@ function TeacherProfile() {
 
   const handleUpdate = async (e) => {
     e.preventDefault();
+    if (!formData.name || !formData.email || !formData.school || !formData.department || !formData.cabinNumber || !formData.title) {
+      alert("Please fill in all the required fields.");
+      return;
+    }
     try {
       const updatedFormData = new FormData();
       updatedFormData.append('name', formData.name);
       updatedFormData.append('email', formData.email);
       updatedFormData.append('school', formData.school);
       updatedFormData.append('department', formData.department);
+      updatedFormData.append('title', formData.title);
+      updatedFormData.append('linkedin', formData.linkedin);
+      updatedFormData.append('profileLink', formData.profileLink);
       updatedFormData.append('cabinNumber', formData.cabinNumber);
       if (formData.photo instanceof File) {
         updatedFormData.append('photo', formData.photo);
@@ -98,7 +117,6 @@ function TeacherProfile() {
 
       const response = await axios.put(`/api/teachers/${id}`, updatedFormData);
       
-      // Update the photoUrl with the new Cloudinary URL if a new photo was uploaded
       if (response.data.photo) {
         setFormData(prev => ({
           ...prev,
@@ -106,6 +124,7 @@ function TeacherProfile() {
         }));
       }
 
+      if (!window.confirm("Are you sure you want to save the changes?")) return;
       alert('Profile updated successfully');
       setIsEditing(false);
     } catch (error) {
@@ -113,20 +132,51 @@ function TeacherProfile() {
     }
   };
 
+  // Handle delete request
+  const handleDeleteProfile = async () => {
+    try {
+        const response = await axios.delete('/api/teachers/delete', {
+            data: { teacherId: id, password }
+        });
+        alert(response.data.message);
+        logout();
+        // Redirect to homepage or login after deletion
+        window.location.href = '/';
+    } catch (error) {
+        setDeleteError(error.response.data.message || "Error deleting profile");
+    }
+  };
+
+  const handleAddAnnouncement = async () => {
+    if (!newAnnouncement.trim()) return;
+    try {
+      const response = await axios.post(`/api/teachers/${id}/announcements`, { text: newAnnouncement });
+      setAnnouncements([...announcements, response.data]);
+      setNewAnnouncement('');
+    } catch (error) {
+      alert('Failed to add announcement');
+    }
+  };
+
+  const handleDeleteAnnouncement = async (announcementId) => {
+    try {
+      await axios.delete(`/api/teachers/${id}/announcements/${announcementId}`);
+      setAnnouncements(announcements.filter(a => a._id !== announcementId));
+    } catch (error) {
+      alert('Failed to delete announcement');
+    }
+  };
+
   const handleLogout = async () => {
     try {
-      await axios.post('/api/teacher-logout'); // Using relative path since baseURL is set
-      
+      await axios.post('/api/teacher-logout');
       logout();
-      
-      // Redirect to login page and replace history entry
       navigate('/teacher-login', { replace: true });
     } catch (error) {
       alert('Failed to logout');
     }
-  }
+  };
 
-  // Handle image loading errors
   const handleImageError = (e) => {
     e.target.src = 'https://res.cloudinary.com/ds0hgmipo/image/upload/v1728231827/teacher-photos/default.jpg';
   };
@@ -149,8 +199,17 @@ function TeacherProfile() {
           <p><strong>Email:</strong> {formData.email}</p>
           <p><strong>School:</strong> {formData.school}</p>
           <p><strong>Department:</strong> {formData.department}</p>
+          <p><strong>Title:</strong> {formData.title}</p>
+          {formData.linkedin && (
+            <p><strong>LinkedIn:</strong> <a href={`https://linkedin.com/in/${formData.linkedin}`} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline font-semibold">{formData.linkedin}</a></p>
+          )}
+          {formData.profileLink && (
+            <p><strong>Profile Link:</strong> <a href={formData.profileLink} target="_blank" rel="noopener noreferrer">{formData.profileLink}</a></p>
+          )}
           <p><strong>Cabin Number:</strong> {formData.cabinNumber}</p>
           <p><strong>Research Interests:</strong> {formData.researchInterests.map(interest => interest.label).join(', ')}</p>
+
+          {/* Available Slots Table */}
           <div className="max-w-md mx-auto mt-10">
             <h3 className="text-xl font-bold mt-4">Available Slots</h3>
             <div className="grid grid-cols-10 gap-1 text-center">
@@ -172,12 +231,85 @@ function TeacherProfile() {
             </div>
           </div>
 
+          {/* Announcements Section */}
+          <div className="mt-8">
+            <h3 className="text-2xl font-bold mb-4">Announcements</h3>
+            <div className="space-y-4">
+              {announcements.map((announcement) => (
+                <div key={announcement._id} className="bg-gray-100 p-3 rounded flex justify-between items-center">
+                  <span>{announcement.text}</span>
+                  <button
+                    onClick={() => handleDeleteAnnouncement(announcement._id)}
+                    className="text-red-500 hover:text-red-700"
+                    title="Delete Announcement"
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
+              ))}
+              <div className="flex">
+                <input
+                  type="text"
+                  value={newAnnouncement}
+                  onChange={(e) => setNewAnnouncement(e.target.value)}
+                  className="flex-grow p-2 border border-gray-300 rounded-l"
+                  placeholder="New announcement"
+                />
+                <button
+                  onClick={handleAddAnnouncement}
+                  className="bg-blue-500 text-white p-2 rounded-r"
+                >
+                  <PlusCircle size={24} />
+                </button>
+              </div>
+            </div>
+          </div>
+
           <button 
             onClick={() => setIsEditing(true)} 
             className="mt-4 bg-blue-500 text-white p-2 rounded"
           >
             Edit Profile
           </button>
+
+          <button 
+                className="bg-red-500 text-white px-4 py-2 rounded mt-4"
+                onClick={() => setDeleteModalOpen(true)}
+            >
+                Delete Profile
+            </button>
+
+            {isDeleteModalOpen && (
+                <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
+                    <div className="bg-white p-6 rounded shadow-lg">
+                        <h2>Confirm Deletion</h2>
+                        <p>Please enter your password to confirm:</p>
+                        <input 
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="border p-2 rounded w-full mt-2"
+                        />
+                        {deleteError && (
+                            <p className="text-red-500 mt-2">{deleteError}</p>
+                        )}
+                        <div className="flex justify-end mt-4">
+                            <button 
+                                className="bg-gray-500 text-white px-4 py-2 rounded mr-2"
+                                onClick={() => setDeleteModalOpen(false)}
+                            >
+                                Cancel
+                            </button>
+                            <button 
+                                className="bg-red-500 text-white px-4 py-2 rounded"
+                                onClick={handleDeleteProfile}
+                            >
+                                Confirm Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
       ) : (
         <form onSubmit={handleUpdate} className="space-y-4">
@@ -229,12 +361,46 @@ function TeacherProfile() {
               required
             >
               <option value="">Select Department</option>
-              <option value="Computer Science">Computer Science</option>
+              <option value="CSE">CSE</option>
               <option value="ICT">ICT</option>
-              <option value="E.C">E.C</option>
+              <option value="ECE">ECE</option>
+              <option value="EEE">EEE</option>
               <option value="Chemical">Chemical</option>
               <option value="Mechanical">Mechanical</option>
             </select>
+          </div>
+          <div>
+            <label className="block text-gray-700">Title</label>
+            <input
+              type="text"
+              name="title"
+              value={formData.title}
+              onChange={handleInputChange}
+              className="w-full p-2 border border-gray-300 rounded"
+              placeholder="e.g., Professor, Assistant Professor"
+            />
+          </div>
+          <div>
+            <label className="block text-gray-700">LinkedIn Username</label>
+            <input
+              type="text"
+              name="linkedin"
+              value={formData.linkedin}
+              onChange={handleInputChange}
+              className="w-full p-2 border border-gray-300 rounded"
+              placeholder="Optional"
+            />
+          </div>
+          <div>
+            <label className="block text-gray-700">Profile Link</label>
+            <input
+              type="url"
+              name="profileLink"
+              value={formData.profileLink}
+              onChange={handleInputChange}
+              className="w-full p-2 border border-gray-300 rounded"
+              placeholder="Optional"
+            />
           </div>
           <div>
             <label className="block text-gray-700">Cabin Number</label>
@@ -250,12 +416,13 @@ function TeacherProfile() {
           <div>
             <label className="block text-gray-700">Photo</label>
             {formData.photoUrl && (
-              <img src={formData.photoUrl} alt="Current" className="mt-2 max-w-xs rounded-lg shadow" />
+              <img src={formData.photoUrl} alt={formData.name} className="mt-4 max-w-xs rounded-lg shadow" onError={handleImageError}/>
             )}
             <input
               type="file"
+              accept="image/*"
               onChange={handlePhotoChange}
-              className="w-full p-2 border border-gray-300 rounded mt-2"
+              className="mt-2"
             />
           </div>
           <div>
@@ -264,44 +431,43 @@ function TeacherProfile() {
               isMulti
               options={researchOptions}
               value={formData.researchInterests}
-              onChange={(selectedOptions) => setFormData(prev => ({ ...prev, researchInterests: selectedOptions }))}
+              onChange={(selected) => setFormData(prev => ({ ...prev, researchInterests: selected }))}
               className="w-full"
-              placeholder="Select research interests"
             />
           </div>
-          <div className="max-w-md mx-auto mt-10">
-            <label className="block text-gray-700 mb-2">Available Slots</label>
-            <div className="grid grid-cols-10 gap-1 text-center">
-              <div></div>
-              {timeSlots.map((time) => (
-                <div key={time} className="font-semibold">{time}</div>
-              ))}
-              {daysOfWeek.map((day) => (
-                <React.Fragment key={day}>
-                  <div className="font-semibold">{day}</div>
-                  {timeSlots.map((time) => (
-                    <div
-                      key={time}
-                      className={`w-10 h-10 border flex justify-center items-center cursor-pointer ${formData.availableSlots[day]?.includes(time) ? 'bg-green-500 text-white font-bold' : ''}`}
-                      onClick={() => handleSlotChange(day, time)}
-                    >
-                      {formData.availableSlots[day]?.includes(time) ? '✔️' : ''}
-                    </div>
-                  ))}
-                </React.Fragment>
-              ))}
+          <div>
+            <label className="block text-gray-700">Available Slots</label>
+            <div className="max-w-md mx-auto mt-4">
+              <div className="grid grid-cols-10 gap-1 text-center">
+                <div></div>
+                {timeSlots.map((time) => (
+                  <div key={time} className="font-semibold">{time}</div>
+                ))}
+                {daysOfWeek.map((day) => (
+                  <React.Fragment key={day}>
+                    <div className="font-semibold">{day}</div>
+                    {timeSlots.map((time) => (
+                      <div
+                        key={time}
+                        className={`w-10 h-10 border flex justify-center items-center cursor-pointer ${formData.availableSlots[day]?.includes(time) ? 'bg-green-500' : ''}`}
+                        onClick={() => handleSlotChange(day, time)}
+                      ></div>
+                    ))}
+                  </React.Fragment>
+                ))}
+              </div>
             </div>
           </div>
           <button
             type="submit"
-            className="bg-green-500 text-white p-2 rounded"
+            className="bg-blue-500 text-white p-2 rounded"
           >
             Save Changes
           </button>
           <button
             type="button"
             onClick={() => setIsEditing(false)}
-            className="bg-red-500 text-white p-2 rounded ml-4"
+            className="bg-gray-500 text-white p-2 rounded ml-4"
           >
             Cancel
           </button>
