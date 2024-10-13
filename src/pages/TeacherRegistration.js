@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Select from 'react-select';
 import researchOptions from '../variables/researchOptions';
+import axios from 'axios';
+import { AuthContext } from './AuthContext';
 
 function TeacherRegistration() {
   const navigate = useNavigate();
+  const { logout } = useContext(AuthContext);
   const [step, setStep] = useState(1);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -85,6 +88,8 @@ function TeacherRegistration() {
       const data = await response.json();
       if (response.ok) {
         console.log('Teacher registered:', data);
+        await axios.post('/api/teacher-logout');
+        logout();
         setFlashMessage('Registration successful! Redirecting to login page...');
         setTimeout(() => {
           navigate('/teacher-login');
