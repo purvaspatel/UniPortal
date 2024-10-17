@@ -3,18 +3,18 @@ import React from 'react';
 const features = [
   { 
     title: 'Teacher Cabins', 
-    description: 'Easily access and book teacher cabins for meetings and study sessions.',
+    description: 'Explore Teacher cabin, available slots and announcements.',
     link: '/teacher-list' // Add your link here
   },
   { 
     title: 'University Clubs', 
     description: 'Join various university clubs and expand your network.',
-    link: '/#' // Add your link here
+    link: '/university-clubs' // Add your link here
   },
   { 
     title: 'FAQs', 
     description: 'Find answers to the most common questions from students.',
-    link: '/#' // Add your link here
+    link: '/faqs-students-pdeu' // Add your link here
   },
 ];
 

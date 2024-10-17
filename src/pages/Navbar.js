@@ -49,13 +49,13 @@ const Navbar = () => {
           {dropdownOpen && (
             <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-400 shadow-lg">
               <a href="/teacher-list" className="block px-4 py-2 text-gray-600 border-b border-gray-400 hover:bg-gray-100">Teachers Sitting</a>
-              <a href="/#" className="block px-4 py-2 text-gray-600 border-b border-gray-400 hover:bg-gray-100">Uni Clubs</a>
-              <a href="/#" className="block px-4 py-2 text-gray-600 border-b border-gray-400 hover:bg-gray-100">FAQ's</a>
+              <a href="/university-clubs" className="block px-4 py-2 text-gray-600 border-b border-gray-400 hover:bg-gray-100">Uni Clubs</a>
+              <a href="/about-us" className="block px-4 py-2 text-gray-600 border-b border-gray-400 hover:bg-gray-100">FAQ's</a>
             </div>
           )}
         </div>
 
-        <a href="/about" className="text-gray-600 hover:text-black">About Us</a>
+        <a href="/about-us" className="text-gray-600 hover:text-black">About Us</a>
       </nav>
     </header>
   );

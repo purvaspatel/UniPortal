@@ -9,7 +9,9 @@ import TeacherProfile from './pages/TeacherProfile';
 import Navbar from './pages/Navbar';
 import { AuthProvider } from './pages/AuthContext';
 import ProtectedRoute from './pages/ProtectedRoute';
-
+import UniClubHero from './pages/UniClubHero';
+import Faq from './pages/Faq';
+import AboutUs from './pages/AboutUs';
 
 import axios from 'axios';
 
@@ -23,10 +25,13 @@ function App() {
       <AuthProvider> {/* AuthProvider must be inside Router to use useNavigate */}
         <Routes>
           <Route path="/" element={<LandingPage />} />
+          <Route path="/about-us" element={<AboutUs/>}/>
           <Route path="/teacher-registration" element={<TeacherRegistration />} />
           <Route path="/teacher/:id" element={<TeacherShowProfile />} />
           <Route path="/teacher-list" element={<TeacherSearch />} />
           <Route path="/teacher-login" element={<TeacherLogin />} />
+          <Route path="/university-clubs" element={<UniClubHero/>}/>
+          <Route path="faqs-students-pdeu" element={<Faq/>}/>
           <Route
             path="/teacher-profile/:id"
             element={
