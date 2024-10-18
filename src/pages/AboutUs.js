@@ -30,7 +30,7 @@ const AboutUs = () => {
         </h1>
         <p className="text-xl text-gray-600 max-w-3xl mx-auto">
           We built this platform to bridge the gap between students and teachers,
-          making mentorship more accessible and organized for future generations.
+          making mentorship more accessible and organized for future generations. 
         </p>
       </div>
 

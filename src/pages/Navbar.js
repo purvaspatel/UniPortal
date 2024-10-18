@@ -50,7 +50,7 @@ const Navbar = () => {
             <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-400 shadow-lg">
               <a href="/teacher-list" className="block px-4 py-2 text-gray-600 border-b border-gray-400 hover:bg-gray-100">Teachers Sitting</a>
               <a href="/university-clubs" className="block px-4 py-2 text-gray-600 border-b border-gray-400 hover:bg-gray-100">Uni Clubs</a>
-              <a href="/about-us" className="block px-4 py-2 text-gray-600 border-b border-gray-400 hover:bg-gray-100">FAQ's</a>
+              <a href="/faqs-students-pdeu" className="block px-4 py-2 text-gray-600 border-b border-gray-400 hover:bg-gray-100">FAQ's</a>
             </div>
           )}
         </div>

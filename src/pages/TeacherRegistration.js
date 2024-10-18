@@ -1,23 +1,23 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Select from 'react-select';
-import researchOptions from '../variables/researchOptions';
-import axios from 'axios';
-import { AuthContext } from './AuthContext';
+import React, { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import Select from "react-select";
+import researchOptions from "../variables/researchOptions";
+import axios from "axios";
+import { AuthContext } from "./AuthContext";
 
 function TeacherRegistration() {
   const navigate = useNavigate();
   const { logout } = useContext(AuthContext);
   const [step, setStep] = useState(1);
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [school, setSchool] = useState('');
-  const [department, setDepartment] = useState('');
-  const [title, setTitle] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [school, setSchool] = useState("");
+  const [department, setDepartment] = useState("");
+  const [title, setTitle] = useState("");
   const [photo, setPhoto] = useState(null);
-  const [cabinNumber, setCabinNumber] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [cabinNumber, setCabinNumber] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [researchInterests, setResearchInterests] = useState([]);
   const [availableSlots, setAvailableSlots] = useState({
     Mon: [],
@@ -26,8 +26,8 @@ function TeacherRegistration() {
     Thu: [],
     Fri: [],
   });
-  const [progressWidth, setProgressWidth] = useState('33.33%');
-  const [flashMessage, setFlashMessage] = useState('');
+  const [progressWidth, setProgressWidth] = useState("33.33%");
+  const [flashMessage, setFlashMessage] = useState("");
 
   useEffect(() => {
     // Scroll to the top of the page on component load
@@ -61,46 +61,51 @@ function TeacherRegistration() {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      setFlashMessage('Passwords do not match!');
+      setFlashMessage("Passwords do not match!");
       return;
     }
 
     const formData = new FormData();
-    formData.append('name', name);
-    formData.append('email', email);
-    formData.append('school', school);
-    formData.append('department', department);
-    formData.append('title', title);
-    formData.append('cabinNumber', cabinNumber);
-    formData.append('availableSlots', JSON.stringify(availableSlots));
-    formData.append('password', password);
-    formData.append('researchInterests', JSON.stringify(researchInterests.map(item => item.value)));
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("school", school);
+    formData.append("department", department);
+    formData.append("title", title);
+    formData.append("cabinNumber", cabinNumber);
+    formData.append("availableSlots", JSON.stringify(availableSlots));
+    formData.append("password", password);
+    formData.append(
+      "researchInterests",
+      JSON.stringify(researchInterests.map((item) => item.value))
+    );
     if (photo) {
-      formData.append('photo', photo);
+      formData.append("photo", photo);
     }
 
     try {
-      const response = await fetch('http://localhost:5000/api/teachers', {
-        method: 'POST',
+      const response = await fetch("http://localhost:5000/api/teachers", {
+        method: "POST",
         body: formData,
       });
 
       const data = await response.json();
       if (response.ok) {
-        console.log('Teacher registered:', data);
-        await axios.post('/api/teacher-logout');
+        console.log("Teacher registered:", data);
+        await axios.post("/api/teacher-logout");
         logout();
-        setFlashMessage('Registration successful! Redirecting to login page...');
+        setFlashMessage(
+          "Registration successful! Redirecting to login page..."
+        );
         setTimeout(() => {
-          navigate('/teacher-login');
+          navigate("/teacher-login");
         }, 3000);
       } else {
-        console.error('Error:', data);
-        setFlashMessage('Registration failed. Please try again.');
+        console.error("Error:", data);
+        setFlashMessage("Registration failed. Please try again.");
       }
     } catch (error) {
-      console.error('Error:', error);
-      setFlashMessage('An error occurred. Please try again later.');
+      console.error("Error:", error);
+      setFlashMessage("An error occurred. Please try again later.");
     }
   };
 
@@ -182,7 +187,9 @@ function TeacherRegistration() {
                 />
               </div>
               <div>
-                <label className="block text-gray-700">Research Interests</label>
+                <label className="block text-gray-700">
+                  Research Interests
+                </label>
                 <Select
                   isMulti
                   options={researchOptions}
@@ -196,8 +203,18 @@ function TeacherRegistration() {
           </>
         );
       case 2:
-        const times = ['9-10', '10-11', '11-12', '12-1', '1-2', '2-3', '3-4', '4-5', '5-6'];
-        const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+        const times = [
+          "9-10",
+          "10-11",
+          "11-12",
+          "12-1",
+          "1-2",
+          "2-3",
+          "3-4",
+          "4-5",
+          "5-6",
+        ];
+        const days = ["Mon", "Tue", "Wed", "Thu", "Fri"];
         return (
           <>
             <h2 className="text-2xl font-bold mb-4">Availability & Cabin</h2>
@@ -213,26 +230,55 @@ function TeacherRegistration() {
                 />
               </div>
               <div>
-                <label className="block text-gray-700 mb-2">Available Slots</label>
-                <div className="grid grid-cols-10 gap-1 text-center">
-                  <div></div>
-                  {times.map((time) => (
-                    <div key={time} className="font-semibold">{time}</div>
-                  ))}
-                  {days.map((day) => (
-                    <React.Fragment key={day}>
-                      <div className="font-semibold">{day}</div>
-                      {times.map((time) => (
-                        <div
-                          key={time}
-                          className={`w-10 h-10 border flex justify-center items-center cursor-pointer ${availableSlots[day].includes(time) ? 'bg-green-500 text-white font-bold' : ''}`}
-                          onClick={() => handleSlotChange(day, time)}
-                        >
-                          {availableSlots[day].includes(time) ? '✔' : ''}
-                        </div>
-                      ))}
-                    </React.Fragment>
-                  ))}
+                <label className="block text-gray-700 mb-2">
+                  Available Slots
+                </label>
+                <div className="max-w-4xl mx-auto">
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full border-collapse">
+                      {/* Header row with time slots */}
+                      <thead>
+                        <tr>
+                          <th className="w-20 border border-gray-200 bg-gray-50 p-3"></th>
+                          {times.map((time) => (
+                            <th
+                              key={time}
+                              className="w-24 border border-gray-200 bg-gray-50 p-3 text-sm font-medium text-gray-700"
+                            >
+                              {time}
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
+
+                      {/* Table body with days and slots */}
+                      <tbody>
+                        {days.map((day) => (
+                          <tr key={day}>
+                            <td className="border border-gray-200 bg-gray-50 p-3 text-sm font-medium text-gray-700 text-center">
+                              {day}
+                            </td>
+                            {times.map((time) => (
+                              <td
+                                key={`${day}-${time}`}
+                                className={`border border-gray-200 p-3 text-center h-12 cursor-pointer
+                  ${
+                    availableSlots[day]?.includes(time)
+                      ? "bg-green-50"
+                      : "bg-white"
+                  }`}
+                                onClick={() => handleSlotChange(day, time)}
+                              >
+                                {availableSlots[day]?.includes(time) && (
+                                  <div className="w-3 h-3 rounded-full bg-green-500 mx-auto"></div>
+                                )}
+                              </td>
+                            ))}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>
@@ -275,7 +321,10 @@ function TeacherRegistration() {
     <div className="max-w-4xl mx-auto p-4">
       <form onSubmit={handleSubmit}>
         <div className="progress-bar w-full h-1 bg-gray-300">
-          <div className="bg-blue-500 h-full" style={{ width: progressWidth }}></div>
+          <div
+            className="bg-blue-500 h-full"
+            style={{ width: progressWidth }}
+          ></div>
         </div>
         {flashMessage && <p className="text-red-500 my-4">{flashMessage}</p>}
         <div className="my-8">{renderStepContent()}</div>
