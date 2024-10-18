@@ -106,7 +106,7 @@ function TeacherSearch() {
     <div className="mt-10">
       <div className="max-w-md mx-auto">
         <h4 className="text-2xl font-bold text-center mb-6">
-          Search Professor Profile, Announcements & more
+          Search Professors
           </h4>
 
         <form onSubmit={handleSearch} className="space-y-4">
@@ -135,9 +135,6 @@ function TeacherSearch() {
       )}
 
       <div className="mt-8">
-        <div className="max-w-sl pl-20 pr-20 mx-auto">
-          <h2 className="text-2xl font-bold mb-4">Teacher List</h2>
-        </div>
         {currentTeachers.length === 0 ? (
           <p>No teachers found.</p>
         ) : (
@@ -152,25 +149,25 @@ function TeacherSearch() {
                   <h3 className="text-2xl font-semibold">{teacher.name}</h3>
                   <p>
                     <strong>
-                      <u>Email:</u>
+                      Email:
                     </strong>{" "}
                     {teacher.email}
                   </p>
                   <p>
                     <strong>
-                      <u>School:</u>
+                      School:
                     </strong>{" "}
                     {teacher.school}
                   </p>
                   <p>
                     <strong>
-                      <u>Department:</u>
+                      Department
                     </strong>{" "}
                     {teacher.department}
                   </p>
                   <p>
                     <strong>
-                      <u>Research Interests:</u>
+                      Research Interests:
                     </strong>{" "}
                     {teacher.researchInterests.join(", ")}
                   </p>

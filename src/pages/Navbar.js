@@ -30,7 +30,7 @@ const Navbar = () => {
       {/* Left Side: Logo and Text */}
       <div className="flex items-center space-x-4">
         <a href="/"><img src={logo} alt="Logo" className="h-12"/> </a>{/* Adjust height/width */}
-        <span className="font-bold text-xl">Student Uni Portal</span>
+        <span className="font-bold text-xl">Uni Portal</span>
       </div>
 
       {/* Right Side: Links */}

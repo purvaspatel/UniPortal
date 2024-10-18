@@ -218,13 +218,10 @@ function TeacherProfile() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h2 className="text-2xl font-bold text-gray-900 tracking-tight mb-8 border-b border-gray-200 pb-4">
-          Teacher Profile
-        </h2>
 
         {!isEditing ? (
           <div className="bg-white rounded-xl shadow-sm p-6">
-            <div className="grid md:grid-cols-3 gap-8">
+            <div className="grid md:grid-cols-4 gap-8">
               {/* Profile Section */}
               <div className="md:col-span-1">
                 {formData.photoUrl && (
@@ -293,6 +290,19 @@ function TeacherProfile() {
                         </a>
                       </p>
                     )}
+                    <p className="text-gray-700">
+                      <span className="font-medium text-gray-900">Research Interests:</span>
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {formData.researchInterests.map((interest) => (
+                        <span
+                          key={interest.value}
+                          className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm"
+                        >
+                          {interest.label}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </div>
 
@@ -304,11 +314,11 @@ function TeacherProfile() {
                     Edit Profile
                   </button>
                   <button
-            className="bg-red-500 text-white px-4 py-2 rounded mt-4"
-            onClick={() => setDeleteModalOpen(true)}
-          >
-            Delete Profile
-          </button>
+                    className="w-full bg-red-500 text-white px-4 py-2 rounded mt-4"
+                    onClick={() => setDeleteModalOpen(true)}
+                  >
+                    Delete Profile
+                  </button>
 
           {isDeleteModalOpen && (
             <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
@@ -351,12 +361,12 @@ function TeacherProfile() {
               </div>
 
               {/* Main Content Section */}
-              <div className="md:col-span-2 space-y-8">
+              <div className="md:col-span-3 space-y-8">
                 {/* Research Interests */}
                 {/* Announcements Section */}
                 <div className="bg-white rounded-xl shadow-sm p-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                    Announcements&#40;visible to students&#41;
+                    Announcements
                   </h3>
                   <div className="space-y-4">
                     {announcements.map((announcement) => (
@@ -402,7 +412,7 @@ function TeacherProfile() {
                     Available Slots
                   </h3>
                   <div className="overflow-x-auto">
-                    <div className="grid grid-cols-10 gap-1 text-center min-w-[800px]">
+                    <div className="grid grid-cols-10 gap-1 text-center min-w-[796px]">
                       <div className="bg-gray-50 p-3 rounded-tl-lg"></div>
                       {timeSlots.map((time) => (
                         <div
@@ -438,22 +448,6 @@ function TeacherProfile() {
                     </div>
                   </div>
                 </div>
-
-                <div className="bg-gray-50 rounded-xl p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                    Research Interests
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {formData.researchInterests.map((interest) => (
-                      <span
-                        key={interest.value}
-                        className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm"
-                      >
-                        {interest.label}
-                      </span>
-                    ))}
-                  </div>
-                </div>
               </div>
             </div>
             <div className="mt-8 bg-white rounded-xl shadow-sm p-6">
@@ -470,18 +464,18 @@ function TeacherProfile() {
                 up-to-date for effective communication.
               </p>
 
-              <h4 className="font-medium text-gray-900">
-                Contact Information:
+              <h4 className="text-lg font-semibold text-gray-900 mb-4">
+                Contact Information
               </h4>
               <p className="text-gray-700">
-                Email:kalashjain124@gmail.com
+                Email: kalashjain124@gmail.com
                 <a
-                  href="mailto:your-email@example.com"
+                  href="mailto:kalashjain124@gmail.com"
                   className="text-blue-600 hover:text-blue-800"
                 ></a>
               </p>
-              <p className="text-gray-700">Phone:+91 91064 12192</p>
-              <p className="text-gray-700">Phone:+91 87805 60746</p>
+              <p className="text-gray-700">Phone: +91 91064 12192</p>
+              <p className="text-gray-700">Phone: +91 87805 60746</p>
             </div>
           </div>
         ) : (
