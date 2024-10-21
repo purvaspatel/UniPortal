@@ -58,6 +58,11 @@ function TeacherRegistration() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const isValidEmail = (email) => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
+  };
+
   const handlePhotoChange = (e) => {
     if (e.target.files[0]) {
       const file = e.target.files[0];
@@ -86,6 +91,11 @@ function TeacherRegistration() {
 
     if (formData.password !== formData.confirmPassword) {
       setFlashMessage("Passwords do not match!");
+      return;
+    }
+
+    if (!isValidEmail(formData.email)) {
+      setFlashMessage('Please enter a valid email address.');
       return;
     }
 
