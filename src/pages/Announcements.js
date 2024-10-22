@@ -21,6 +21,10 @@ const Announcements = () => {
             }))
           )
           .flat();
+
+        // Sort by date (newest first)
+        allAnnouncements.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
         setAnnouncements(allAnnouncements);
       } catch (error) {
         console.error('Error fetching announcements:', error);
