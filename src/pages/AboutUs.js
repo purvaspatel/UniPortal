@@ -26,59 +26,45 @@ const AboutUs = () => {
       {/* Header Section */}
       <div className="max-w-7xl mx-auto text-center mb-16">
         <h1 className="text-5xl font-bold text-gray-900 mb-6">
-          About Our Vision
+          About Us
         </h1>
-        <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-          We built this platform to bridge the gap between students and teachers,
-          making mentorship more accessible and organized for future generations. 
-        </p>
+        
       </div>
 
       {/* Team Section */}
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 items-start">
-          {/* Team Members */}
-          {teamMembers.map((member, index) => (
-            <div
-              key={index}
-              className="flex flex-col items-center transform hover:-translate-y-2 transition-all duration-300"
-            >
-              <div className="relative group">
-                <img
-                  src={member.image}
-                  alt={member.name}
-                  className="w-64 h-64 rounded-2xl object-cover shadow-lg"
-                />
-                <div className="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl flex items-center justify-center">
-                  <div className="flex space-x-4">
-                    <a href={member.github} target="_blank" rel="noopener noreferrer" className="text-white hover:text-gray-200">
-                      <Github className="w-8 h-8" />
-                    </a>
-                    <a href={member.twitter} target="_blank" rel="noopener noreferrer" className="text-white hover:text-gray-200">
-                      <Twitter className="w-8 h-8" />
-                    </a>
-                    <a href={member.website} target="_blank" rel="noopener noreferrer" className="text-white hover:text-gray-200">
-                      <Globe className="w-8 h-8" />
-                    </a>
-                  </div>
-                </div>
-              </div>
-              <h3 className="mt-6 text-2xl font-semibold text-gray-900">{member.name}</h3>
-              <p className="text-gray-600 mt-2">{member.role}</p>
-            </div>
-          ))}
-
-          {/* Join Us Card */}
-          <div className="flex flex-col items-center">
-            <div className="w-64 h-64 rounded-2xl bg-gradient-to-br from-blue-100 to-indigo-100 border-2 border-dashed border-blue-300 flex items-center justify-center group hover:from-blue-200 hover:to-indigo-200 transition-all duration-300 cursor-pointer">
-              <div className="text-center p-6">
-                <Plus className="w-16 h-16 mx-auto text-blue-500 mb-4 group-hover:scale-110 transition-transform duration-300" />
-                <h3 className="text-xl font-semibold text-gray-800 mb-2">Join Our Team</h3>
-                <p className="text-gray-600">Carry forward the legacy and make it even better!</p>
-              </div>
-            </div>
-          </div>
+      <div className="max-w-lg mx-auto mt-12">
+  <div className="flex flex-col items-center transform hover:-translate-y-2 transition-all duration-300">
+    {/* Static Image */}
+    <div className="relative group">
+      <img
+        src="/path-to-your-static-image.jpg" // Update with your static image path
+        alt="Team Member Name"
+        className="w-64 h-64 rounded-2xl object-cover shadow-lg"
+      />
+      <div className="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl flex items-center justify-center">
+        <div className="flex space-x-4">
+          <a href="https://github.com/username" target="_blank" rel="noopener noreferrer" className="text-white hover:text-gray-200">
+            <Github className="w-8 h-8" />
+          </a>
+          <a href="https://twitter.com/username" target="_blank" rel="noopener noreferrer" className="text-white hover:text-gray-200">
+            <Twitter className="w-8 h-8" />
+          </a>
+          <a href="https://yourwebsite.com" target="_blank" rel="noopener noreferrer" className="text-white hover:text-gray-200">
+            <Globe className="w-8 h-8" />
+          </a>
         </div>
+      </div>
+    </div>
+
+    {/* Text Below Image */}
+    <h3 className="mt-6 text-2xl font-semibold text-gray-900">Kalash Jain & Purva Patel</h3>
+    <p className="text-gray-600 mt-2">kalashjain513@gmail.com & purvavisionnxt@gmail.com</p>
+    <p className="text-gray-600 mt-2">91064 12192 & 87805 60746</p>
+
+  </div>
+</div>
+
 
         {/* Mission Statement */}
         <div className="mt-24 text-center max-w-4xl mx-auto">
