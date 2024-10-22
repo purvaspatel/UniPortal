@@ -12,7 +12,7 @@ import ProtectedRoute from './pages/ProtectedRoute';
 import UniClubHero from './pages/UniClubHero';
 import Faq from './pages/Faq';
 import AboutUs from './pages/AboutUs';
-
+import Announcements from './pages/Announcements';
 import axios from 'axios';
 
 axios.defaults.withCredentials = true;
@@ -32,6 +32,7 @@ function App() {
           <Route path="/teacher-login" element={<TeacherLogin />} />
           <Route path="/university-clubs" element={<UniClubHero/>}/>
           <Route path="faqs-students-pdeu" element={<Faq/>}/>
+          <Route path="announcements" element={<Announcements/>}/>
           <Route
             path="/teacher-profile/:id"
             element={
