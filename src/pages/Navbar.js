@@ -51,6 +51,7 @@ const Navbar = () => {
               <a href="/teacher-list" className="block px-4 py-2 text-gray-600 border-b border-gray-400 hover:bg-gray-100">Teachers Sitting</a>
               <a href="/university-clubs" className="block px-4 py-2 text-gray-600 border-b border-gray-400 hover:bg-gray-100">Uni Clubs</a>
               <a href="/faqs-students-pdeu" className="block px-4 py-2 text-gray-600 border-b border-gray-400 hover:bg-gray-100">FAQ's</a>
+              <a href="/announcements" className="block px-4 py-2 text-gray-600 border-b border-gray-400 hover:bg-gray-100">Announcements</a>
             </div>
           )}
         </div>
