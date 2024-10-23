@@ -13,10 +13,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 
-//defualt
-app.get("/",(req,res)=>{
-  res.json("hello");
-})
+
 
 app.use(cors({
   origin: ['https://pdeu-uniportal.vercel.app', 'http://localhost:3000'],
@@ -24,6 +21,10 @@ app.use(cors({
   credentials: true
 }));
 
+//defualt
+app.get("/",(req,res)=>{
+  res.json("hello");
+})
 app.use(express.json());
 
 // Session configuration
