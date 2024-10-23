@@ -2,7 +2,7 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "proxy": "https://uniportal-0uts.onrender.com",
+  "proxy": "https://uni-portal-api.vercel.app/",
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
