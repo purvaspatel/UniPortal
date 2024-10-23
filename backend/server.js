@@ -18,11 +18,9 @@ app.get("/",(req,res)=>{
   res.json("hello");
 })
 
-// CORS configuration
 app.use(cors({
-  origin: 'https://pdeu-uniportal.vercel.app/', // Replace with your frontend URL
-  
-  methods:["POST","GET"],
+  origin: ['https://pdeu-uniportal.vercel.app', 'http://localhost:3000'],
+  methods: ["POST", "GET", "PUT", "DELETE"],
   credentials: true
 }));
 
@@ -376,6 +374,8 @@ app.get('/api/check-auth', (req, res) => {
 });
 
 // Start the server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// app.listen(PORT, () => {
+//   console.log(`Server running on port ${PORT}`);
+// });
+
+module.exports = app;
