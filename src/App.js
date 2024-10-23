@@ -14,7 +14,6 @@ import Faq from './pages/Faq';
 import AboutUs from './pages/AboutUs';
 import Announcements from './pages/Announcements';
 import axios from 'axios';
-
 axios.defaults.withCredentials = true;
 
 function App() {
