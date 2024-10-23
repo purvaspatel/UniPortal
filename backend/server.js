@@ -12,6 +12,12 @@ const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+
+//defualt
+app.get("/",(req,res)=>{
+  res.json("hello");
+})
+
 // CORS configuration
 app.use(cors({
   origin: 'http://localhost:3000', // Replace with your frontend URL
