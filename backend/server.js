@@ -20,7 +20,9 @@ app.get("/",(req,res)=>{
 
 // CORS configuration
 app.use(cors({
-  origin: 'http://localhost:3000', // Replace with your frontend URL
+  origin: 'https://pdeu-uniportal.vercel.app/', // Replace with your frontend URL
+  
+  methods:["POST","GET"],
   credentials: true
 }));
 
