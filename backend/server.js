@@ -73,7 +73,7 @@ const storage = new CloudinaryStorage({
 const upload = multer({ storage: storage });
 
 // MongoDB connection
-const mongo_uri = process.env.MONGO_URI || "mongodb+srv://kalashjain124:KalashJain12@cluster0.ev11zj4.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const mongo_uri = process.env.MONGO_URI ;
 mongoose.connect(mongo_uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
